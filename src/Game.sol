@@ -116,7 +116,7 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
         return number + 1;
     }
 
-    function upgradeTo(address newImplementation) external override onlyProxy {
+    function upgradeTo(address newImplementation) external override onlyOwner {
         _authorizeUpgrade(newImplementation);
         _upgradeToAndCallUUPS(newImplementation, new bytes(0), false);
     }
