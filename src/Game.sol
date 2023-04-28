@@ -37,8 +37,9 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
     mapping(address => mapping(uint256 => State)) public state;
     mapping(uint256 => bool) public monsterReadyToAttack;
 
-    function initialize(string memory _baseUri) public initializer onlyOwner {
+    function initialize(string memory _baseUri) public initializer {
         __ERC721_init("GAME", "GM");
+        __Ownable_init();
         baseUri = _baseUri;
     }
 
@@ -144,4 +145,4 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
     ) internal override {}
 }
 
-// check attacker's status
+// 0xc79F6DbB9FfAEC3f28eDEACB1Fe921f3c9B3eC25
