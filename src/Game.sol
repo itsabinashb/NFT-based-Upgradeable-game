@@ -7,7 +7,7 @@ import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.s
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.sol";
 
-abstract contract Game is
+ contract Game is
     Initializable,
     ERC721Upgradeable,
     OwnableUpgradeable,
@@ -116,15 +116,16 @@ abstract contract Game is
         return number + 1;
     }
 
-    function _authorizeUpgrade(
-        address newImplementation
-    ) internal virtual override onlyOwner {}
+    function upgradeTo(address newImplementation) external override onlyProxy {
+        _authorizeUpgrade(newImplementation);
+        _upgradeToAndCallUUPS(newImplementation, new bytes(0), false);
+    }
 
     function coolDown(uint256 _tokenId) internal waitTillCoolingDown {
         monsterReadyToAttack[_tokenId] = true;
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
+    function _baseURI() internal view override returns (string memory) {
         return baseUri;
     }
 
@@ -137,6 +138,10 @@ abstract contract Game is
         require(block.timestamp > timeSet);
         _;
     }
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override {}
 }
 
 // check attacker's status
