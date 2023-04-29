@@ -17,4 +17,3 @@ contract MyScript is Script {
     }
 }
 
-// 0x586e0f6ca6c861a4e7ac6e4c32e1fa030b297eaf
