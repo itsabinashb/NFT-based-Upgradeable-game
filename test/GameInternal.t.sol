@@ -21,7 +21,6 @@ contract GameInternal is Game, Test {
     function test_tokenURI() external {
         initialize("uri");
         mint(user);
-        
-        
+        assertEq(tokenURI(1), "uri1");
     }
 }
