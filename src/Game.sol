@@ -105,6 +105,7 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
         uint256 number = uint256(
             keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))
         ) % 100;
+        nonce++;
         return number + 1;
     }
 
@@ -127,4 +128,4 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
     }
 }
 
-// https://sepolia.etherscan.io/address/0xa9b344b40bff99b49a45dbd993343b49e05510b8
+// https://sepolia.etherscan.io/address/0xcb9c42ce14e0039da477b8ac2f0345c15542f8c7
