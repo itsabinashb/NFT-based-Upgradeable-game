@@ -10,6 +10,7 @@ contract Proxy is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     function initialize(address _newImplementation) public initializer {
         __UUPSUpgradeable_init();
+        __Ownable_init();
         implemented = _newImplementation;
     }
 
@@ -29,4 +30,4 @@ contract Proxy is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     }
 }
 
-// https://sepolia.etherscan.io/address/0xebbf8e975cd8acaf343a3b002f37e84cdea3a68d
+// https://sepolia.etherscan.io/address/0x3ca6ef0bda6b10ae9bef670e4ef655ff583383f4
