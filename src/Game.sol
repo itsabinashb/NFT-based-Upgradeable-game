@@ -4,15 +4,9 @@ pragma solidity ^0.8.17;
 import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/token/ERC721/ERC721Upgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
-import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.sol";
 
- contract Game is
-    Initializable,
-    ERC721Upgradeable,
-    OwnableUpgradeable,
-    UUPSUpgradeable
-{
+contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter public tokenId;
     CountersUpgradeable.Counter public monsterId;
@@ -30,7 +24,7 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
     string public baseUri;
     uint256 internal timeSet;
 
-    mapping(address => uint256) public addressToMonster;
+    mapping(address => uint256) public addressToMonsterId;
     mapping(uint256 => address) public monsterIdToAddress;
     mapping(uint256 => bool) public presentInMonsters;
     mapping(uint256 => Status) public status;
@@ -51,11 +45,12 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
     }
 
     function generateMonster() public payable {
+        require(msg.value == 0.01 ether, "Pay 0.01 ether to mint a monster!");
         monsterId.increment();
         uint256 currentTokenId = monsterId.current();
-        require(addressToMonster[msg.sender] < 2);
+        // require(addressToMonster[msg.sender] < 2);
         _safeMint(msg.sender, currentTokenId);
-        addressToMonster[msg.sender]++;
+        addressToMonsterId[msg.sender] = currentTokenId;
         monsterIdToAddress[currentTokenId] = msg.sender;
         presentInMonsters[currentTokenId] = true;
 
@@ -63,15 +58,13 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
         monsterReadyToAttack[currentTokenId] = true;
     }
 
-    function attack(
-        uint256 _enemyTokenId,
-        uint256 _attackerTokenId
-    ) public payable {
-        require(monsterReadyToAttack[_attackerTokenId] == true);
+    function attack(uint256 _enemyTokenId) public payable {
         require(
             msg.value == 0.01 ether,
             "Please pay 0.01 ether to start an attack"
         );
+        uint256 _attackerTokenId = addressToMonsterId[msg.sender];
+        require(monsterReadyToAttack[_attackerTokenId] == true);
         uint256 number = generateNumber();
         if (number > 50) {
             state[msg.sender][_attackerTokenId] = State.win;
@@ -92,10 +85,8 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
         coolDown(_attackerTokenId);
     }
 
-    function chooseOpponent(
-        uint256 _enemyTokenId,
-        uint256 _attackerTokenId
-    ) public {
+    function chooseOpponent(uint256 _enemyTokenId) public {
+        uint256 _attackerTokenId = addressToMonsterId[msg.sender];
         require(
             status[_enemyTokenId] == Status.free &&
                 status[_attackerTokenId] == Status.free
@@ -117,11 +108,6 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
         return number + 1;
     }
 
-    function upgradeTo(address newImplementation) external override onlyOwner {
-        _authorizeUpgrade(newImplementation);
-        _upgradeToAndCallUUPS(newImplementation, new bytes(0), false);
-    }
-
     function coolDown(uint256 _tokenId) internal waitTillCoolingDown {
         monsterReadyToAttack[_tokenId] = true;
     }
@@ -139,10 +125,6 @@ import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.s
         require(block.timestamp > timeSet);
         _;
     }
-
-    function _authorizeUpgrade(
-        address newImplementation
-    ) internal override {}
 }
 
 // 0xc79F6DbB9FfAEC3f28eDEACB1Fe921f3c9B3eC25
