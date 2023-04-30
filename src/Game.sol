@@ -7,6 +7,11 @@ import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.s
 import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.sol";
 
 contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
+
+    event MonsterGenerated(address, uint256);
+    event Winner(address);
+    event Looser(address);
+
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter public tokenId;
     CountersUpgradeable.Counter public monsterId;
@@ -45,6 +50,7 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
     }
 
     function generateMonster() public payable {
+        require(addressToMonsterId[msg.sender] == 0);
         require(msg.value == 0.01 ether, "Pay 0.01 ether to mint a monster!");
         monsterId.increment();
         uint256 currentTokenId = monsterId.current();
@@ -56,6 +62,7 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
 
         status[currentTokenId] = Status.free;
         monsterReadyToAttack[currentTokenId] = true;
+        emit MonsterGenerated(msg.sender, currentTokenId);
     }
 
     function attack(uint256 _enemyTokenId) public payable {
@@ -63,17 +70,19 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
             msg.value == 0.01 ether,
             "Please pay 0.01 ether to start an attack"
         );
+        address winner;
+        address looser;
         uint256 _attackerTokenId = addressToMonsterId[msg.sender];
         require(monsterReadyToAttack[_attackerTokenId] == true);
         uint256 number = generateNumber();
         if (number > 50) {
             state[msg.sender][_attackerTokenId] = State.win;
-            address looser = monsterIdToAddress[_enemyTokenId];
+            looser = monsterIdToAddress[_enemyTokenId];
             state[looser][_enemyTokenId] = State.loss;
             mint(msg.sender);
         } else {
             state[msg.sender][_attackerTokenId] = State.loss;
-            address winner = monsterIdToAddress[_enemyTokenId];
+            winner = monsterIdToAddress[_enemyTokenId];
             state[winner][_enemyTokenId] = State.loss;
             mint(winner);
         }
@@ -83,6 +92,9 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
         timeSet = block.timestamp + 1 hours;
         monsterReadyToAttack[_attackerTokenId] = false;
         coolDown(_attackerTokenId);
+
+        emit Winner(winner);
+        emit Looser(looser);
     }
 
     function chooseOpponent(uint256 _enemyTokenId) public {
@@ -128,4 +140,4 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
     }
 }
 
-// https://sepolia.etherscan.io/address/0xcb9c42ce14e0039da477b8ac2f0345c15542f8c7
+// https://sepolia.etherscan.io/address/0x77c38854945f3b767ad1226fc323495a74593bc8
