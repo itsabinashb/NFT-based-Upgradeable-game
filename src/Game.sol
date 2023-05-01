@@ -5,9 +5,14 @@ import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.s
 import "openzeppelin-contracts-upgradeable/contracts/token/ERC721/ERC721Upgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/utils/CountersUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 
-contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
-
+contract Game is
+    Initializable,
+    ERC721Upgradeable,
+    OwnableUpgradeable,
+    UUPSUpgradeable
+{
     event MonsterGenerated(address, uint256);
     event Winner(address);
     event Looser(address);
@@ -138,6 +143,10 @@ contract Game is Initializable, ERC721Upgradeable, OwnableUpgradeable {
         require(block.timestamp > timeSet);
         _;
     }
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal virtual override {}
 }
 
-// https://sepolia.etherscan.io/address/0x77c38854945f3b767ad1226fc323495a74593bc8
+// https://sepolia.etherscan.io/address/0xa7521e39b3b1c4c8e5b816fc84cfc3fac196ed13
