@@ -146,7 +146,7 @@ contract Game is
 
     function _authorizeUpgrade(
         address newImplementation
-    ) internal virtual override {}
+    ) internal virtual override onlyOwner{}
 }
 
 // https://sepolia.etherscan.io/address/0xa7521e39b3b1c4c8e5b816fc84cfc3fac196ed13
