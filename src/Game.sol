@@ -147,6 +147,16 @@ contract Game is
     function _authorizeUpgrade(
         address newImplementation
     ) internal virtual override onlyOwner{}
+
+    /**
+     * @dev implementation contract must include upgradeTo()
+     * @param newImplementation address
+     */
+
+    function upgradeTo(address newImplementation) public virtual override onlyProxy {
+        _authorizeUpgrade(newImplementation);
+        _upgradeToAndCallUUPS(newImplementation, new bytes(0), false);
+    }
 }
 
-// https://sepolia.etherscan.io/address/0xa7521e39b3b1c4c8e5b816fc84cfc3fac196ed13
+// https://sepolia.etherscan.io/address/0x60d9778371376ae8d778edfb72e527fd6202f8fd

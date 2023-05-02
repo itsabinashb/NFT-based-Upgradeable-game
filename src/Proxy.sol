@@ -14,13 +14,7 @@ contract Proxy is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         implemented = _newImplementation;
     }
 
-    function upgradeTo(
-        address newImplementation
-    ) external virtual override onlyOwner {
-        _authorizeUpgrade(newImplementation);
-        _upgradeToAndCallUUPS(newImplementation, new bytes(0), false);
-    }
-
+    
     function _authorizeUpgrade(
         address newImplementation
     ) internal virtual override {}
@@ -30,4 +24,4 @@ contract Proxy is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     }
 }
 
-// https://sepolia.etherscan.io/address/0x3ca6ef0bda6b10ae9bef670e4ef655ff583383f4
+// https://sepolia.etherscan.io/address/0x6f791bcc8192a8a039bdc79960b15b92e91117ec

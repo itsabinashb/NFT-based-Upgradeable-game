@@ -2,12 +2,16 @@
 pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import "../src/Proxy.sol";
+import "../src/Game.sol";
 
 contract ProxyScript is Script {
-    function run() external returns(address _address){
+    function run() external returns (address _address) {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
         Proxy proxy = new Proxy();
+
+        Game game = new Game();
+        proxy.initialize(address(game));
         _address = address(proxy);
         vm.stopBroadcast();
         return _address;
