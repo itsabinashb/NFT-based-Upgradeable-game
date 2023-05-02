@@ -14,7 +14,6 @@ contract Proxy is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         implemented = _newImplementation;
     }
 
-    
     function _authorizeUpgrade(
         address newImplementation
     ) internal virtual override {}
@@ -24,4 +23,6 @@ contract Proxy is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     }
 }
 
-// https://sepolia.etherscan.io/address/0x6f791bcc8192a8a039bdc79960b15b92e91117ec
+// https://sepolia.etherscan.io/address/0xe82b259dd65059be38828334200c194d73aa10b8
+
+// The first contract is a simple wrapper or "proxy" which users interact with directly and is in charge of forwarding transactions to and from the second contract, which contains the logic.

@@ -59,7 +59,7 @@ contract Game is
         require(msg.value == 0.01 ether, "Pay 0.01 ether to mint a monster!");
         monsterId.increment();
         uint256 currentTokenId = monsterId.current();
-        // require(addressToMonster[msg.sender] < 2);
+
         _safeMint(msg.sender, currentTokenId);
         addressToMonsterId[msg.sender] = currentTokenId;
         monsterIdToAddress[currentTokenId] = msg.sender;
@@ -146,17 +146,19 @@ contract Game is
 
     function _authorizeUpgrade(
         address newImplementation
-    ) internal virtual override onlyOwner{}
+    ) internal virtual override onlyOwner {}
 
     /**
      * @dev implementation contract must include upgradeTo()
      * @param newImplementation address
      */
 
-    function upgradeTo(address newImplementation) public virtual override onlyProxy {
+    function upgradeTo(
+        address newImplementation
+    ) public virtual override onlyProxy {
         _authorizeUpgrade(newImplementation);
         _upgradeToAndCallUUPS(newImplementation, new bytes(0), false);
     }
 }
 
-// https://sepolia.etherscan.io/address/0x60d9778371376ae8d778edfb72e527fd6202f8fd
+// https://sepolia.etherscan.io/address/0xe82b259dd65059be38828334200c194d73aa10b8
