@@ -2,25 +2,26 @@
 pragma solidity ^0.8.10;
 
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
-import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 
-contract Proxy is Initializable, UUPSUpgradeable, OwnableUpgradeable {
-    address implemented;
+contract Proxy is UUPSUpgradeable {
+    constructor(address implementation) {
+        _setImplementation(implementation);
+    }
 
-    function initialize(address _newImplementation) public initializer {
-        __UUPSUpgradeable_init();
-        __Ownable_init();
-        implemented = _newImplementation;
+    // Inherited from ERC1967UpgradeUpgradeable
+    function _setImplementation(address newImplementation) private  override {
+        require(
+            AddressUpgradeable.isContract(newImplementation),
+            "ERC1967: new implementation is not a contract"
+        );
+        StorageSlotUpgradeable
+            .getAddressSlot(_IMPLEMENTATION_SLOT)
+            .value = newImplementation;
     }
 
     function _authorizeUpgrade(
         address newImplementation
     ) internal virtual override {}
-
-    function getImplementedAddress() public view returns (address) {
-        return implemented;
-    }
 }
 
 // https://sepolia.etherscan.io/address/0xe82b259dd65059be38828334200c194d73aa10b8

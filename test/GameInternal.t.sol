@@ -28,7 +28,7 @@ contract GameInternal is Game, Test {
         vm.startPrank(me);
         game.initialize("uri");
         console.log("Initialize version for 1st initialization:",_getInitializedVersion());
-        proxy.initialize(address(_game));
+       // proxy.initialize(address(_game));
         //proxy.upgradeTo(address(_game));
         vm.stopPrank();
         vm.startPrank(address(user));

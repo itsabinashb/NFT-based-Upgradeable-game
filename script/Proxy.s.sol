@@ -8,8 +8,8 @@ contract ProxyScript is Script {
     function run() external returns (address _address) {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        Game game = new Game();
-        Proxy proxy = Proxy(address(game));
+        Game game = new Game(); // Deploying the Game contract
+        Proxy proxy =new Proxy(address(game));  // Deploying the Proxy contract and making a wrapper on the implementation contract
         _address = address(proxy);
         vm.stopBroadcast();
         return _address;

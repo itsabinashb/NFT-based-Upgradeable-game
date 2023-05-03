@@ -44,6 +44,7 @@ contract Game is
     function initialize(string memory _baseUri) public initializer {
         __ERC721_init("GAME", "GM");
         __Ownable_init();
+         __UUPSUpgradeable_init();
         baseUri = _baseUri;
     }
 
@@ -155,7 +156,7 @@ contract Game is
 
     function upgradeTo(
         address newImplementation
-    ) public virtual override onlyProxy {
+    ) public virtual override onlyProxy onlyOwner{
         _authorizeUpgrade(newImplementation);
         _upgradeToAndCallUUPS(newImplementation, new bytes(0), false);
     }

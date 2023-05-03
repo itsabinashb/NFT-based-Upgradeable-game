@@ -6,50 +6,29 @@ import "../src/Game.sol";
 import "../src/Proxy.sol";
 
 contract ProxyTest is Test {
-    Game game; // main contract address
-    UpgradedGame _game; // upgraded contract address
-    Proxy proxy; // proxy contract address
+    Proxy proxy;
+    Game game;
     address me;
-    address user;
+    UpgradedGame _game;
 
     function setUp() public {
-        game = new Game(); // new main contract instance
-        console.log("address of before implementation", address(game));
-
+        game = new Game();
+        console.log("address of game", address(game));
+        proxy = Proxy(address(game));
+        console.log("address of proxy", address(proxy));
         _game = new UpgradedGame();
-        proxy = Proxy(address(_game));
-        console.log("address of after implementation", address(_game));
-        me = vm.addr(0x3);
-        user = vm.addr(0x4);
+        me = vm.addr(0x1);
         vm.deal(address(me), 5 ether);
-        vm.deal(address(user), 5 ether);
     }
 
-    function test_Proxy() public {
-        vm.prank(address(user));
-        game.initialize("uri");
+    function test_proxy() public {
         vm.startPrank(address(me));
-        proxy.initialize(address(_game));
-        proxy.upgradeTo(address(_game));
-        //_game.initialize("tokenUri");
-        _game.generateMonster{value: 0.01 ether}();
-        assertEq(_game.monsterId(), 2);
+        game.initialize("uri");
+        vm.expectRevert();
+        game.initialize("uri");
 
-        // vm.startPrank(address(user)); // checking is non-owner address can call the upgradeTo() or not
-        // vm.expectRevert();
-        // proxy.upgradeTo(address(_game));
-        // game.initialize("uri");
-        // //console.log("1st implementation version is:", game._getInitializedVersion());
-        // game.generateMonster{value: 0.01 ether}();
-        // assertEq(game.monsterId(), 1);
-        // vm.stopPrank();
-        // vm.startPrank(address(me));
-        // proxy.initialize(address(_game));
-        // proxy.upgradeTo(address(_game));
-        // _game.initialize("tokenUri");
-        // assertEq(_game.baseUri(), "tokenUri");
-        // _game.generateMonster{value: 0.01 ether}();
-        // assertEq(_game.monsterId(),1);
+        game.upgradeTo(address(_game));
+        game.initialize("tokenUri");
     }
 }
 
