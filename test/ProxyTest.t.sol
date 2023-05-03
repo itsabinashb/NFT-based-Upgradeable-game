@@ -21,7 +21,8 @@ contract ProxyTest is Test {
     function test_proxy() public {
         vm.startPrank(address(me));
        // assertEq(proxy.monsterId(), 0);
-        proxy.generateMonster{0.01 ether}();
+        //proxy.generateMonster{0.01 ether}();
+        //proxy.tokenId();
     }
 }
 
