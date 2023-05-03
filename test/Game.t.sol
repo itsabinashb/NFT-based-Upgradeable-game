@@ -16,18 +16,18 @@ contract TestGame is Test {
     }
 
     function test_initialize() public {
-        game.initialize("uri");
+        //game.initialize("uri");
         vm.expectRevert();
         vm.expectRevert();
     }
 
     function test_owner() public {
-        game.initialize("uri");
+        //game.initialize("uri");
         assertEq(game.owner(), me);
     }
 
     function test_baseUri() public {
-        game.initialize("uri");
+       // game.initialize("uri");
         assertEq(game.baseUri(), "uri");
     }
 

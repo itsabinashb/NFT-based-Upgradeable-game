@@ -41,10 +41,13 @@ contract Game is
     mapping(address => mapping(uint256 => State)) public state;
     mapping(uint256 => bool) public monsterReadyToAttack;
 
-    function initialize(string memory _baseUri) public initializer {
+    function initialize() public initializer {
         __ERC721_init("GAME", "GM");
         __Ownable_init();
          __UUPSUpgradeable_init();
+    }
+
+    function setbaseUri(string memory _baseUri) public onlyOwner {
         baseUri = _baseUri;
     }
 
@@ -162,4 +165,4 @@ contract Game is
     }
 }
 
-// https://sepolia.etherscan.io/address/0xe82b259dd65059be38828334200c194d73aa10b8
+// https://sepolia.etherscan.io/address/0xa596a550c9a2c3f22bb56a3582a5d8bc0feeb522

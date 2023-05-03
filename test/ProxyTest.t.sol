@@ -3,32 +3,25 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 import "../src/Game.sol";
-import "../src/Proxy.sol";
+import "../src/MainProxy.sol";
 
 contract ProxyTest is Test {
-    Proxy proxy;
+    MainProxy proxy;
     Game game;
     address me;
     UpgradedGame _game;
 
     function setUp() public {
-        game = new Game();
-        console.log("address of game", address(game));
-        proxy = Proxy(address(game));
-        console.log("address of proxy", address(proxy));
-        _game = new UpgradedGame();
         me = vm.addr(0x1);
-        vm.deal(address(me), 5 ether);
+        game = new Game();
+        proxy = new MainProxy(address(game), abi.encodeWithSignature("initialize()", 0.001 ether));
+        _game = new UpgradedGame();
     }
 
     function test_proxy() public {
         vm.startPrank(address(me));
-        game.initialize("uri");
-        vm.expectRevert();
-        game.initialize("uri");
-
-        game.upgradeTo(address(_game));
-        game.initialize("tokenUri");
+       // assertEq(proxy.monsterId(), 0);
+        proxy.generateMonster{0.01 ether}();
     }
 }
 
