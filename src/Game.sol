@@ -41,6 +41,10 @@ contract Game is
     mapping(address => mapping(uint256 => State)) public state;
     mapping(uint256 => bool) public monsterReadyToAttack;
 
+    constructor() {
+        _disableInitializers();
+    }
+
     function initialize() public initializer {
         __ERC721_init("GAME", "GM");
         __Ownable_init();
